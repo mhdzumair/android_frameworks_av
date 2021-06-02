@@ -37,6 +37,8 @@
 #include "AudioPolicyEffects.h"
 #include "managerdefault/AudioPolicyManager.h"
 
+// zormax add
+#include <audio_policy_mtk.h>
 
 namespace android {
 
@@ -136,6 +138,10 @@ public:
     virtual bool isStreamActive(audio_stream_type_t stream, uint32_t inPastMs = 0) const;
     virtual bool isStreamActiveRemotely(audio_stream_type_t stream, uint32_t inPastMs = 0) const;
     virtual bool isSourceActive(audio_source_t source) const;
+    // zormax add
+    virtual status_t SetPolicyManagerParameters(int par1, int par2, int par3, int par4);
+    virtual status_t getCustomAudioVolume(void* pCustomVol);
+
 
     virtual status_t queryDefaultPreProcessing(audio_session_t audioSession,
                                               effect_descriptor_t *descriptors,
@@ -279,6 +285,8 @@ private:
             DYN_POLICY_MIX_STATE_UPDATE,
             RECORDING_CONFIGURATION_UPDATE,
             EFFECT_SESSION_UPDATE,
+// zormax add
+            GET_CUSTOM_AUDIO_VOLUME,
         };
 
         AudioCommandThread (String8 name, const wp<AudioPolicyService>& service);
@@ -329,6 +337,8 @@ private:
                     void        insertCommand_l(AudioCommand *command, int delayMs = 0);
                     void        effectSessionUpdateCommand(sp<AudioSessionInfo>& info, bool added);
 
+					// zormax add
+                    status_t    getCustomAudioVolumeCommand(void* pCustomVol);
     private:
         class AudioCommandData;
 
@@ -440,6 +450,11 @@ private:
             bool mAdded;
         };
 
+		// zormax add
+        class GetCustomAudioVolumeData : public AudioCommandData {
+        public:
+            AUDIO_CUSTOM_VOLUME_STRUCT mVolConfig;
+        };
         Mutex   mLock;
         Condition mWaitWorkCV;
         Vector < sp<AudioCommand> > mAudioCommands; // list of pending commands
@@ -555,6 +570,8 @@ private:
 
         virtual void onOutputSessionEffectsUpdate(sp<AudioSessionInfo>& info, bool added);
 
+		// zormax add
+        virtual status_t getCustomAudioVolume(void* pCustomVol);
 
      private:
         AudioPolicyService *mAudioPolicyService;
@@ -607,7 +624,12 @@ private:
     sp<AudioCommandThread> mTonePlaybackThread;     // tone playback thread
     sp<AudioCommandThread> mOutputCommandThread;    // process stop and release output
     struct audio_policy_device *mpAudioPolicyDev;
+#if 0 // zormax add, replace it with audio_policy_mtk
     struct audio_policy *mpAudioPolicy;
+#endif
+//<zormax_add
+    struct audio_policy_mtk *mpAudioPolicy;
+//zormax_add>
     AudioPolicyInterface *mAudioPolicyManager;
     AudioPolicyClient *mAudioPolicyClient;
 

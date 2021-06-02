@@ -50,4 +50,13 @@ LOCAL_SHARED_LIBRARIES += \
     libutils \
     libaudioutils \
 
+# zormax add
+ifeq ($(BOARD_USES_MTK_HARDWARE),true)
+LOCAL_CFLAGS += -DMTK_HARDWARE
+
+LOCAL_SHARED_LIBRARIES += \
+    libmedia \
+    libaudiocustparam
+
+endif
 include $(BUILD_SHARED_LIBRARY)

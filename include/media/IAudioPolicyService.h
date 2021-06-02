@@ -124,6 +124,9 @@ public:
     // bit rate, duration, video and streaming or offload property is enabled
     virtual bool isOffloadSupported(const audio_offload_info_t& info) = 0;
 
+   // zormax add
+   virtual status_t SetPolicyManagerParameters(int par1,int par2 ,int par3,int par4) = 0;
+
     /* List available audio ports and their attributes */
     virtual status_t listAudioPorts(audio_port_role_t role,
                                     audio_port_type_t type,

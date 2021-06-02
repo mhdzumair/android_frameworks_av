@@ -239,5 +239,14 @@ audio_unique_id_t AudioPolicyService::AudioPolicyClient::newAudioUniqueId(audio_
 {
     return AudioSystem::newAudioUniqueId(use);
 }
+// zormax add
+status_t AudioPolicyService::AudioPolicyClient::getCustomAudioVolume(void* pCustomVol)
+{
+#ifdef MTK_HARDWARE
+    return mAudioPolicyService->getCustomAudioVolume(pCustomVol);
+#else
+    return INVALID_OPERATION;
+#endif
+}
 
 }; // namespace android
